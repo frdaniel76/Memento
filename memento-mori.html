@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memento Mori - Remember You Must Die</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #f0f0f0;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #a0a0a0;
+            font-style: italic;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section h2 {
+            color: #f0f0f0;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            font-size: 1.2em;
+        }
+
+        .quote-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #c9a959;
+            margin-bottom: 20px;
+        }
+
+        .quote-text {
+            font-size: 1.3em;
+            font-style: italic;
+            color: #f0f0f0;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .quote-author {
+            text-align: right;
+            color: #c9a959;
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(201, 169, 89, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            color: #c9a959;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #b0b0b0;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .life-calendar {
+            margin-top: 20px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(52, 1fr);
+            gap: 3px;
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .week-box {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: rgba(201, 169, 89, 0.3);
+            transition: all 0.3s;
+        }
+
+        .week-box.lived {
+            background: #c9a959;
+        }
+
+        .week-box:hover {
+            transform: scale(1.5);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #c9a959;
+            font-weight: bold;
+        }
+
+        input[type="date"],
+        input[type="number"],
+        input[type="time"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(201, 169, 89, 0.3);
+            border-radius: 8px;
+            color: #f0f0f0;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        button {
+            background: linear-gradient(135deg, #c9a959 0%, #a08645 100%);
+            color: #1a1a2e;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(201, 169, 89, 0.4);
+        }
+
+        .reflection-prompts {
+            list-style: none;
+        }
+
+        .reflection-prompts li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border-left: 3px solid #c9a959;
+        }
+
+        .reflection-prompts li:before {
+            content: "→ ";
+            color: #c9a959;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .reminder-status {
+            padding: 15px;
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .reminder-status.show {
+            display: block;
+        }
+
+        .skull {
+            text-align: center;
+            font-size: 4em;
+            margin: 20px 0;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .calendar-grid {
+                gap: 2px;
+            }
+            
+            .week-box {
+                width: 6px;
+                height: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⏳ MEMENTO MORI ⏳</h1>
+            <p class="subtitle">Remember you must die</p>
+            <div class="skull">💀</div>
+        </header>
+
+        <div class="section">
+            <h2><span class="icon">📜</span> Today's Reflection</h2>
+            <div class="quote-box">
+                <div class="quote-text" id="dailyQuote"></div>
+                <div class="quote-author" id="quoteAuthor"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="icon">⏰</span> Your Mortality</h2>
+            <div class="input-group">
+                <label for="birthdate">Your Birth Date:</label>
+                <input type="date" id="birthdate" />
+            </div>
+            <button onclick="calculateLife()">Calculate Your Time</button>
+            
+            <div id="statsDisplay" style="display: none;">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number" id="daysLived">0</span>
+                        <span class="stat-label">Days Lived</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="weeksLived">0</span>
+                        <span class="stat-label">Weeks Lived</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="yearsLived">0</span>
+                        <span class="stat-label">Years Old</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="estimatedWeeks">0</span>
+                        <span class="stat-label">Weeks Remaining*</span>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; color: #808080; font-size: 0.9em; text-align: center;">
+                    *Based on average life expectancy of 80 years
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="icon">📅</span> Your Life in Weeks</h2>
+            <p style="margin-bottom: 15px; color: #b0b0b0;">
+                Each box represents one week of life. Golden boxes are weeks you've lived.
+            </p>
+            <div class="life-calendar">
+                <div class="calendar-grid" id="lifeCalendar"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="icon">🔔</span> Daily Reminders</h2>
+            <p style="margin-bottom: 15px; color: #b0b0b0;">
+                Set times to receive memento mori reflections throughout your day.
+            </p>
+            <div class="input-group">
+                <label for="morningTime">Morning Reminder:</label>
+                <input type="time" id="morningTime" value="08:00" />
+            </div>
+            <div class="input-group">
+                <label for="afternoonTime">Afternoon Reminder:</label>
+                <input type="time" id="afternoonTime" value="14:00" />
+            </div>
+            <div class="input-group">
+                <label for="eveningTime">Evening Reminder:</label>
+                <input type="time" id="eveningTime" value="20:00" />
+            </div>
+            <button onclick="enableReminders()">Enable Notifications</button>
+            <div class="reminder-status" id="reminderStatus"></div>
+        </div>
+
+        <div class="section">
+            <h2><span class="icon">💭</span> Reflection Prompts</h2>
+            <ul class="reflection-prompts">
+                <li>If today were my last, would I be proud of how I spent it?</li>
+                <li>What truly matters in my life right now?</li>
+                <li>Am I spending time on things that won't matter in a year?</li>
+                <li>What would I regret not doing if I died tomorrow?</li>
+                <li>Who do I need to connect with while I still can?</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const quotes = [
+            { text: "You could leave life right now. Let that determine what you do and say and think.", author: "Marcus Aurelius" },
+            { text: "It is not death that a man should fear, but he should fear never beginning to live.", author: "Marcus Aurelius" },
+            { text: "Let us prepare our minds as if we'd come to the very end of life. Let us postpone nothing. Let us balance life's books each day. The one who puts the finishing touches on their life each day is never short of time.", author: "Seneca" },
+            { text: "Think of yourself as dead. You have lived your life. Now take what's left and live it properly.", author: "Marcus Aurelius" },
+            { text: "Death smiles at us all, but all a man can do is smile back.", author: "Marcus Aurelius" },
+            { text: "While we wait for life, life passes.", author: "Seneca" },
+            { text: "It's not that we have a short time to live, but that we waste much of it.", author: "Seneca" },
+            { text: "Every man dies. Not every man really lives.", author: "William Wallace" },
+            { text: "The fear of death follows from the fear of life. A man who lives fully is prepared to die at any time.", author: "Mark Twain" },
+            { text: "Do not act as if you had ten thousand years to live. Death hangs over you. While you live, while it is in your power, be good.", author: "Marcus Aurelius" },
+            { text: "How can you live a good life when you act as if you have endless years before you?", author: "Epictetus" },
+            { text: "Death is not the greatest loss in life. The greatest loss is what dies inside us while we live.", author: "Norman Cousins" },
+            { text: "To the well-organized mind, death is but the next great adventure.", author: "Albus Dumbledore" },
+            { text: "Life is like a coin. You can spend it any way you wish, but you only spend it once.", author: "Lillian Dickson" },
+            { text: "Our death is not an end if we can live on in our children and the younger generation.", author: "Albert Einstein" }
+        ];
+
+        // Display random quote on load
+        function displayDailyQuote() {
+            const today = new Date().toDateString();
+            let quoteIndex = localStorage.getItem('quoteIndex');
+            let lastQuoteDate = localStorage.getItem('lastQuoteDate');
+            
+            if (lastQuoteDate !== today) {
+                quoteIndex = Math.floor(Math.random() * quotes.length);
+                localStorage.setItem('quoteIndex', quoteIndex);
+                localStorage.setItem('lastQuoteDate', today);
+            }
+            
+            const quote = quotes[quoteIndex || 0];
+            document.getElementById('dailyQuote').textContent = `"${quote.text}"`;
+            document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
+        }
+
+        function calculateLife() {
+            const birthdate = document.getElementById('birthdate').value;
+            if (!birthdate) {
+                alert('Please enter your birth date');
+                return;
+            }
+
+            localStorage.setItem('birthdate', birthdate);
+
+            const birth = new Date(birthdate);
+            const today = new Date();
+            const diffTime = Math.abs(today - birth);
+            const daysLived = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const weeksLived = Math.floor(daysLived / 7);
+            const yearsLived = Math.floor(daysLived / 365.25);
+            
+            // Assuming 80 years life expectancy
+            const totalWeeks = 80 * 52;
+            const weeksRemaining = totalWeeks - weeksLived;
+
+            document.getElementById('daysLived').textContent = daysLived.toLocaleString();
+            document.getElementById('weeksLived').textContent = weeksLived.toLocaleString();
+            document.getElementById('yearsLived').textContent = yearsLived;
+            document.getElementById('estimatedWeeks').textContent = weeksRemaining > 0 ? weeksRemaining.toLocaleString() : '?';
+            
+            document.getElementById('statsDisplay').style.display = 'block';
+            
+            generateLifeCalendar(weeksLived);
+        }
+
+        function generateLifeCalendar(weeksLived) {
+            const calendar = document.getElementById('lifeCalendar');
+            calendar.innerHTML = '';
+            
+            const totalWeeks = 80 * 52; // 80 years
+            
+            for (let i = 0; i < totalWeeks; i++) {
+                const weekBox = document.createElement('div');
+                weekBox.className = 'week-box';
+                if (i < weeksLived) {
+                    weekBox.classList.add('lived');
+                }
+                weekBox.title = `Week ${i + 1}`;
+                calendar.appendChild(weekBox);
+            }
+        }
+
+        function enableReminders() {
+            if (!("Notification" in window)) {
+                alert("This browser does not support notifications");
+                return;
+            }
+
+            Notification.requestPermission().then(permission => {
+                const status = document.getElementById('reminderStatus');
+                if (permission === "granted") {
+                    status.textContent = "✓ Notifications enabled! You'll receive memento mori reminders at your scheduled times.";
+                    status.classList.add('show');
+                    
+                    // Save reminder times
+                    localStorage.setItem('morningTime', document.getElementById('morningTime').value);
+                    localStorage.setItem('afternoonTime', document.getElementById('afternoonTime').value);
+                    localStorage.setItem('eveningTime', document.getElementById('eveningTime').value);
+                    
+                    scheduleReminders();
+                } else {
+                    status.textContent = "⚠ Notifications blocked. Please enable them in your browser settings.";
+                    status.style.background = "rgba(244, 67, 54, 0.2)";
+                    status.style.borderColor = "rgba(244, 67, 54, 0.5)";
+                    status.classList.add('show');
+                }
+            });
+        }
+
+        function scheduleReminders() {
+            setInterval(checkReminders, 60000); // Check every minute
+            checkReminders(); // Check immediately
+        }
+
+        function checkReminders() {
+            const now = new Date();
+            const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            
+            const morning = localStorage.getItem('morningTime');
+            const afternoon = localStorage.getItem('afternoonTime');
+            const evening = localStorage.getItem('eveningTime');
+            
+            const lastNotification = localStorage.getItem('lastNotification');
+            
+            if ((currentTime === morning || currentTime === afternoon || currentTime === evening) && 
+                lastNotification !== currentTime + new Date().toDateString()) {
+                
+                showReminder();
+                localStorage.setItem('lastNotification', currentTime + new Date().toDateString());
+            }
+        }
+
+        function showReminder() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            
+            if (Notification.permission === "granted") {
+                new Notification("⏳ Memento Mori", {
+                    body: randomQuote.text + " — " + randomQuote.author,
+                    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>💀</text></svg>",
+                    requireInteraction: false
+                });
+            }
+        }
+
+        // Load saved birthdate on page load
+        window.onload = function() {
+            displayDailyQuote();
+            
+            const savedBirthdate = localStorage.getItem('birthdate');
+            if (savedBirthdate) {
+                document.getElementById('birthdate').value = savedBirthdate;
+                calculateLife();
+            }
+            
+            // Load saved reminder times
+            const morning = localStorage.getItem('morningTime');
+            const afternoon = localStorage.getItem('afternoonTime');
+            const evening = localStorage.getItem('eveningTime');
+            
+            if (morning) document.getElementById('morningTime').value = morning;
+            if (afternoon) document.getElementById('afternoonTime').value = afternoon;
+            if (evening) document.getElementById('eveningTime').value = evening;
+            
+            // Start checking for reminders if permission already granted
+            if (Notification.permission === "granted") {
+                scheduleReminders();
+            }
+        };
+    </script>
+</body>
+</html>
